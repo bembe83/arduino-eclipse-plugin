@@ -271,9 +271,23 @@ The color used by the fourth serial connection of the serial monitor
     <command
           categoryId="io.sloeber.commands"
           defaultHandler="io.sloeber.ui.actions.UploadProjectHandler"
-          description="%command.UploadprojectAction.description"
+          description="%command.ArduinoUploadSPIFFSAction.description"
           id="io.sloeber.actions.UploadprojectAction"
           name="%command.UploadprojectAction.name">
+    </command>
+    <command
+          categoryId="io.sloeber.commands"
+          defaultHandler="io.sloeber.ui.actions.BuildSpiffsHandler"
+          description="%command.ArduinoBuildSPIFFSAction.description"
+          id="io.sloeber.actions.BuildSpiffsHandler"
+          name="%command.ArduinoBuildSPIFFSAction.name">
+    </command>
+        <command
+          categoryId="io.sloeber.commands"
+          defaultHandler="io.sloeber.ui.actions.UploadSpiffsHandler"
+          description="%command.ArduinoUploadSPIFFSAction.description "
+          id="io.sloeber.actions.UploadSpiffsHandler"
+          name="%command.ArduinoUploadPIFFSAction.name ">
     </command>
     <command
           categoryId="io.sloeber.commands"
@@ -370,7 +384,19 @@ The color used by the fourth serial connection of the serial monitor
           <command
                 commandId="io.sloeber.actions.UploadprojectAction"
                 icon="icons/arrow.png"
-                label="%command.name"
+                label="%command.label.0"
+                style="push">
+          </command>
+          <command
+                commandId="io.sloeber.actions.BuildSpiffsHandler"
+                icon="icons/spiffs_build.png"
+                label="%command.label.3"
+                style="push">
+          </command>
+          <command
+                commandId="io.sloeber.actions.UploadSpiffsHandler"
+                icon="icons/spiffs_upload.png"
+                label="%command.label.4"
                 style="push">
           </command>
           <command
@@ -419,6 +445,16 @@ The color used by the fourth serial connection of the serial monitor
                 icon="icons/arrow.png"
                 id="UploadprojectAction"
                 tooltip="%command.tooltip">
+          </command>
+          <command
+                commandId="io.sloeber.ui.actions.BuildSpiffsHandler"
+                icon="icons/spiffs_build.png"
+                id="BuildSpiffs">
+          </command>
+          <command
+                commandId="io.sloeber.ui.actions.UploadSpiffsHandler"
+                icon="icons/spiffs_upload.png"
+                id="UploadSpiffs">
           </command>
           <command
                 commandId="io.sloeber.actions.NewSketchAction"
