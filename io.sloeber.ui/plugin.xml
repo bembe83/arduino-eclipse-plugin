@@ -281,13 +281,19 @@ The color used by the fourth serial connection of the serial monitor
           description="%command.ArduinoBuildSPIFFSAction.description"
           id="io.sloeber.actions.BuildSpiffsHandler"
           name="%command.ArduinoBuildSPIFFSAction.name">
+       <commandParameter
+             id="io.sloeber.core.spiffs.action"
+             name="create"/>
     </command>
         <command
           categoryId="io.sloeber.commands"
           defaultHandler="io.sloeber.ui.actions.UploadSpiffsHandler"
-          description="%command.ArduinoUploadSPIFFSAction.description "
+          description="%command.ArduinoUploadSPIFFSAction.description"
           id="io.sloeber.actions.UploadSpiffsHandler"
-          name="%command.ArduinoUploadPIFFSAction.name ">
+          name="%command.ArduinoUploadPIFFSAction.name">
+          <commandParameter
+             id="io.sloeber.core.spiffs.action"
+             name="upload"/>
     </command>
     <command
           categoryId="io.sloeber.commands"
@@ -387,6 +393,7 @@ The color used by the fourth serial connection of the serial monitor
                 label="%command.label.0"
                 style="push">
           </command>
+          <!--new-->
           <command
                 commandId="io.sloeber.actions.BuildSpiffsHandler"
                 icon="icons/spiffs_build.png"
@@ -399,6 +406,7 @@ The color used by the fourth serial connection of the serial monitor
                 label="%command.label.4"
                 style="push">
           </command>
+          <!--new end-->
           <command
                 commandId="io.sloeber.actions.NewSketchAction"
                 icon="icons/new.png"

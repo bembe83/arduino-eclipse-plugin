@@ -120,7 +120,10 @@ public class Messages extends NLS {
 	public static String ui_pragma_once_headers;
 
 	public static String ui_use_arduino_toolchain_selection;
-
+	
+	public static String spiffs_create;
+	public static String spiffs_upload;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
