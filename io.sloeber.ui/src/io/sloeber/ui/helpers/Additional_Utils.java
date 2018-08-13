@@ -12,6 +12,7 @@ import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.settings.model.ICConfigurationDescription;
 import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +27,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import io.sloeber.core.api.BoardDescriptor;
 import io.sloeber.core.common.Common;
 
-public class Spiffs_Utils {
+public class Additional_Utils {
 	
 	public static String CONSOLE_NAME ="Arduino SPIFFS";
 
@@ -66,7 +67,7 @@ public class Spiffs_Utils {
 
 	MessageConsoleStream console;
 
-	public Spiffs_Utils(IProject project)
+	public Additional_Utils(IProject project)
 	{
 		console = retrieveConsole();
 		myBuildProject = project;		
@@ -118,13 +119,6 @@ public class Spiffs_Utils {
 	{		
 		if(myBuildProject != null)
 		{	
-
-
-			String esptoolPath = Common.getBuildEnvironmentVariable(confDesc, "", new String());
-			esptoolCommand = esptoolPath+bd.getActualUploadTool(confDesc);
-
-			String mkspiffsPath = Common.getBuildEnvironmentVariable(confDesc, "", new String());
-			mkspiffsCommand = mkspiffsPath+Common.getBuildEnvironmentVariable(confDesc, "", new String());
 
 			sketchName = myBuildProject.getName();
 			strImagePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/"+myBuildProject.getName() + "/" + sketchName + ".ino.generic.bin";
@@ -229,6 +223,29 @@ public class Spiffs_Utils {
 		vCommand.add("-s");
 		vCommand.add(String.valueOf(spiSize));
 		vCommand.add(strImagePath);
+
+		return vCommand.toArray(new String[vCommand.size()]);
+	}
+	
+	public String[] eraseCommand()
+	{
+		Vector <String> vCommand = new Vector<>();
+
+		if(esptoolCommand.contains(".py"))
+		{
+			vCommand.add(pythonCommand);
+			vCommand.add(esptoolCommand);
+			vCommand.add("-p");
+			vCommand.add(strSerialPort);
+			vCommand.add("erase_flash");
+		}
+		else
+		{
+			vCommand.add(esptoolCommand);
+			vCommand.add("-cp");
+			vCommand.add(strSerialPort);
+			vCommand.add("-ce");
+		}
 
 		return vCommand.toArray(new String[vCommand.size()]);
 	}
@@ -405,7 +422,7 @@ public class Spiffs_Utils {
 
 	public  String getEsptoolCmd()
 	{
-		String esptoolPath =  getPref("tools.esptool.path")+"/"; 
+		String esptoolPath =  getPref("tools.esptool.path").replaceAll("\"", "")+"/"; 
 		String esptoolCmd = "";
 		if(isWinOs())
 			esptoolCmd = getPref("tools.esptool.cmd.windows");
@@ -509,9 +526,9 @@ public class Spiffs_Utils {
 
 		try {
 			if(listenOnProcess(makeSpiffsCommand()) != 0){
-				console.println("SPIFFS Create Failed!");
-				return -1;
+				throw new Exception("listenOnProcess return -1");
 			}
+			myBuildProject.refreshLocal(IResource.DEPTH_ZERO, null);
 		} catch (Exception e){
 			console.println("SPIFFS Create Failed!\n"+getExceptionMessage(e));
 			return -1;
@@ -557,6 +574,33 @@ public class Spiffs_Utils {
 							+"\n[SPIFFS] speed  :"+strUploadSpeed);
 			sysExec(uploadCommand(strImagePath));
 		}
+		return 1;
+	}
+	
+	public int erase(){
+
+		//make sure the serial port or IP is defined
+		if (strSerialPort == null || strSerialPort.isEmpty()) {
+			console.println("SPIFFS Error: serial port not defined!");
+			return -1;
+		}
+
+		String strEspTool="";
+		//find espota if IP else find esptool
+		if(strSerialPort.split("\\.").length == 4){
+			return -1;
+		} else {
+			strEspTool = esptoolCommand;
+		}
+
+		File esp = new File(strEspTool);
+		if(!esp.exists()){
+			console.println("SPIFFS Error: "+strEspTool+" not found!");
+			return -1;
+		}
+
+		console.println("Erasing Flash");
+		sysExec(eraseCommand());
 		return 1;
 	}
 

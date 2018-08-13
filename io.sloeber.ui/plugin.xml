@@ -285,7 +285,7 @@ The color used by the fourth serial connection of the serial monitor
              id="io.sloeber.core.spiffs.action"
              name="create"/>
     </command>
-        <command
+    <command
           categoryId="io.sloeber.commands"
           defaultHandler="io.sloeber.ui.actions.UploadSpiffsHandler"
           description="%command.ArduinoUploadSPIFFSAction.description"
@@ -294,6 +294,13 @@ The color used by the fourth serial connection of the serial monitor
           <commandParameter
              id="io.sloeber.core.spiffs.action"
              name="upload"/>
+    </command>
+     <command
+          categoryId="io.sloeber.commands"
+          defaultHandler="io.sloeber.ui.actions.EraseHandler"
+          description="%command.ArduinoEraseAction.description"
+          id="io.sloeber.actions.EraseHandler"
+          name="%command.ArduinoEraseAction.name">
     </command>
     <command
           categoryId="io.sloeber.commands"
@@ -429,6 +436,12 @@ The color used by the fourth serial connection of the serial monitor
                 commandId="io.sloeber.actions.OpenPlotterAction"
                 icon="icons/toolbar_plotter.png"
                 label="%OpenPlotter.label"
+                style="push">
+          </command>
+          <command
+                commandId="io.sloeber.actions.EraseHandler"
+                icon="icons/erase.png"
+                label="%command.label.5"
                 style="push">
           </command>
        </toolbar>

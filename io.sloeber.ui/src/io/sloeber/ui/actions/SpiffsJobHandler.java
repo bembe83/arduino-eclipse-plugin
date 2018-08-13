@@ -15,7 +15,7 @@ import org.eclipse.ui.PlatformUI;
 import io.sloeber.ui.Activator;
 import io.sloeber.ui.Messages;
 import io.sloeber.ui.helpers.MyPreferences;
-import io.sloeber.ui.helpers.Spiffs_Utils;
+import io.sloeber.ui.helpers.Additional_Utils;
 
 
 public class SpiffsJobHandler extends Job {
@@ -40,6 +40,8 @@ public class SpiffsJobHandler extends Job {
 	public long spiBlock = 0;
 	public long spiSize;
 	
+	Additional_Utils spUtil = null;
+	
 	public SpiffsJobHandler(String name, ExecutionEvent event) {
 		super(name);
 		this.event = event;
@@ -49,6 +51,7 @@ public class SpiffsJobHandler extends Job {
 		super(Messages.BuildHandler_Build_Code_of_project + buildProject.getName());
 		this.myBuildProject = buildProject;
 		this.event = event;
+		this.spUtil = new Additional_Utils(myBuildProject);
 	}
 
 	@Override
@@ -58,7 +61,7 @@ public class SpiffsJobHandler extends Job {
 		try 
 		{
 			String action = event.getCommand().getParameter("io.sloeber.core.spiffs.action").getName();
-			Spiffs_Utils spUtil = new Spiffs_Utils(myBuildProject);
+			
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -85,31 +88,22 @@ public class SpiffsJobHandler extends Job {
 
 						if(iRetVal==SWT.OK)
 						{
-							if(create)
-								iRetVal = spUtil.create();
+							iRetVal = create?spUtil.create():1;
 
 							if(iRetVal != 1)
 							{
-								dialog = new MessageBox(theShell, SWT.ICON_ERROR | SWT.OK);
-								dialog.setText("Build SPIFFS");
-								dialog.setMessage("Error creating SPIFFS image");
-								dialog.open();
 								throw new Exception("Build Failed");
 							}
 
-							if(upload)
-								iRetVal = spUtil.upload();
+							iRetVal = upload?spUtil.upload():1;
 
 							if(iRetVal != 1)
 							{
-								dialog = new MessageBox(theShell, SWT.ICON_ERROR | SWT.OK);
-								dialog.setText("Build SPIFFS");
-								dialog.setMessage("Error creating SPIFFS image");
-								dialog.open();
 								throw new Exception("Upload Failed");
 							}
 
-						}else
+						}
+						else
 						{
 							dialog = new MessageBox(theShell, SWT.ICON_ERROR | SWT.OK);
 							dialog.setText("Build SPIFFS");
@@ -119,10 +113,10 @@ public class SpiffsJobHandler extends Job {
 						
 					}catch(Exception e)
 					{
-						Activator.log(new Status(IStatus.ERROR, Activator.getId(),Spiffs_Utils.getExceptionStackString(e)));
+						spUtil.getConsole().print(Additional_Utils.getExceptionStackString(e));
 						dialog = new MessageBox(theShell, SWT.ICON_ERROR | SWT.OK);
 						dialog.setText("SPIFFS");
-						dialog.setMessage(Spiffs_Utils.getExceptionStackString(e));
+						dialog.setMessage(Additional_Utils.getExceptionStackString(e));
 						dialog.open();
 					}
 				}
@@ -130,7 +124,7 @@ public class SpiffsJobHandler extends Job {
 
 		}catch(Exception e)
 		{
-			Activator.log(new Status(IStatus.ERROR, Activator.getId(),Spiffs_Utils.getExceptionStackString(e)));
+			spUtil.getConsole().println(Additional_Utils.getExceptionStackString(e));
 			iRet = Status.CANCEL_STATUS;
 		}
 		return iRet;
