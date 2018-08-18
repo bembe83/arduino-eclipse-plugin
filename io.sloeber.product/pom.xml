@@ -59,4 +59,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	<version>4.2</version>
 </project>
